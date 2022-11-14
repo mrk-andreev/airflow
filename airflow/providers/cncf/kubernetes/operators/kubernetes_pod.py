@@ -235,6 +235,7 @@ class KubernetesPodOperator(BaseOperator):
         pod_runtime_info_envs: list[k8s.V1EnvVar] | None = None,
         termination_grace_period: int | None = None,
         configmaps: list[str] | None = None,
+        volume_devices: list[k8s.V1VolumeDevice] | None = None,
         **kwargs,
     ) -> None:
         # TODO: remove in provider 6.0.0 release. This is a mitigate step to advise users to switch to the
@@ -299,6 +300,7 @@ class KubernetesPodOperator(BaseOperator):
         self.name = self._set_name(name)
         self.random_name_suffix = random_name_suffix
         self.termination_grace_period = termination_grace_period
+        self.volume_devices = volume_devices
         self.pod_request_obj: k8s.V1Pod | None = None
         self.pod: k8s.V1Pod | None = None
 
@@ -579,6 +581,7 @@ class KubernetesPodOperator(BaseOperator):
                         env=self.env_vars,
                         env_from=self.env_from,
                         security_context=self.container_security_context,
+                        volume_devices=self.volume_devices,
                     )
                 ],
                 image_pull_secrets=self.image_pull_secrets,
